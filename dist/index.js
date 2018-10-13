@@ -129,16 +129,17 @@ var consoleReportTimeline = function (timelineName, timeline) {
     var lastTime = timeline.ticks[0].time;
     var duration = timeline.ticks[timeline.ticks.length - 1].time - timeline.ticks[0].time;
     var maxTime = timeline.ticks.reduce(function (acc, tick) { return tick.time - timeline.ticks[0].time > acc ? tick.time - timeline.ticks[0].time : acc; }, 0);
-    var maxTickTimeLength = duration.toString().length;
+    var maxTickTimeLength = exports.roundText(duration, hasPerformanceNow ? 3 : 0).length;
     var graphWidth = 40;
     console.log('consoleTimelineReport for timeline', timelineName, new Date);
     timeline.ticks.forEach(function (tick) {
-        var timeLappsed = exports.round(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
+        var timeLappsedNum = exports.round(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
+        var timeLappsedText = exports.roundText(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
         lastTime = tick.time;
-        var graph = Array(Math.round(graphWidth * timeLappsed / maxTime)).fill('#').join('');
+        var graph = Array(exports.round((graphWidth * timeLappsedNum / maxTime) || 0, 0)).fill('#').join('');
         var output = "";
         output += textSize(graph, graphWidth, 'r') + " ";
-        output += textSize(timeLappsed.toString(), maxTickTimeLength, 'r') + " ";
+        output += textSize(timeLappsedText, maxTickTimeLength, 'r') + " ";
         output += tick.taskName;
         console.log(output);
     });
@@ -162,6 +163,23 @@ var now = function () {
 };
 exports.round = function (value, digits) {
     return Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits);
+};
+exports.roundText = function (value, digits) {
+    var minValue = 1 / (Math.pow(10, digits));
+    var text;
+    if (value === 0 || value >= minValue) {
+        text = exports.round(value, digits).toLocaleString();
+    }
+    else {
+        text = '<' + (minValue.toLocaleString());
+    }
+    if (digits > 0) {
+        if (text.indexOf('.') == -1)
+            text += '.';
+        while (text.length - text.indexOf('.') - 1 < digits)
+            text += '0';
+    }
+    return text;
 };
 
 

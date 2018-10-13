@@ -9,3 +9,4 @@ export interface ITick {
     time: number;
 }
 export declare const round: (value: number, digits: number) => number;
+export declare const roundText: (value: number, digits: number) => string;
