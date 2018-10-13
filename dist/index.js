@@ -100,7 +100,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.consoleTimeline = function (timelineName, taskName) {
     if (!timelines[timelineName])
         timelines[timelineName] = { ticks: [] };
-    timelines[timelineName].ticks.push({ taskName: taskName, time: Number(new Date) });
+    timelines[timelineName].ticks.push({ taskName: taskName, time: now() });
 };
 exports.consoleTimelineReport = function (timelineName, consoleIt) {
     if (consoleIt === void 0) { consoleIt = true; }
@@ -133,7 +133,7 @@ var consoleReportTimeline = function (timelineName, timeline) {
     var graphWidth = 40;
     console.log('consoleTimelineReport for timeline', timelineName, new Date);
     timeline.ticks.forEach(function (tick) {
-        var timeLappsed = tick.time - lastTime;
+        var timeLappsed = exports.round(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
         lastTime = tick.time;
         var graph = Array(Math.round(graphWidth * timeLappsed / maxTime)).fill('#').join('');
         var output = "";
@@ -153,6 +153,15 @@ var textSize = function (text, size, align) {
             text = " " + text;
     }
     return text;
+};
+var hasPerformanceNow = !!(typeof performance !== "undefined" && performance.now);
+var now = function () {
+    return hasPerformanceNow
+        ? performance.now()
+        : Number(new Date);
+};
+exports.round = function (value, digits) {
+    return Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits);
 };
 
 

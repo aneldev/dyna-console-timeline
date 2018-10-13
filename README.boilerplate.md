@@ -114,7 +114,7 @@ The debug test commands are similar to the debug app commands.
 ### Debug test in any browser
 
 - Run `debug-tests-browser`
-- The browser will be opened at `http://localhost:8023`
+- The browser will be opened at `http://localhost:8028`
 
 ### Debug test with devtools
 

@@ -15,11 +15,11 @@ You can create multiple timelines.
 ```
 import {consoleTimeline, consoleTimelineReport} from "dyna-console-timeline";
 
-consoleTimeline('Process customer request', 'start')
-consoleTimeline('Process customer request', 'load from database')
-consoleTimeline('Process customer request', 'calc the debit')
-consoleTimeline('Process customer request', 'return to client')
-consoleTimeline('Process customer request', 'completed')
+consoleTimeline('Process customer request', 'start');
+consoleTimeline('Process customer request', 'load from database');
+consoleTimeline('Process customer request', 'calc the debit');
+consoleTimeline('Process customer request', 'return to client');
+consoleTimeline('Process customer request', 'completed');
 
 consoleTimelineReport('Process customer request');
     // consoles
