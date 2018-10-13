@@ -1,6 +1,6 @@
 {
   "name": "dyna-console-timeline",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Debug tool, track in timeline the elapsed time",
   "repository": {
     "type": "git",
