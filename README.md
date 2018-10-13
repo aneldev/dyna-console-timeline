@@ -10,7 +10,7 @@ Create ticks on time calling the `consoleTimeline` and whenever you want `consol
 
 You can create multiple timelines.
 
-# example
+# Example
 
 ```
 import {consoleTimeline, consoleTimelineReport} from "dyna-console-timeline";
@@ -29,7 +29,7 @@ consoleTimelineReport('Process customer request');
                            ################# 2297 calc the debit
                                         ####  671 return to client
                                         ####  528 completed
-    total duration 5528
+    total duration 5585
 
 ```
 
@@ -40,5 +40,3 @@ consoleTimelineReport('Process customer request');
 ## consoleTimelineReport = (timelineName: string, consoleIt: boolean = true): ITimeline
 
 ## consoleTimelineReset = (timelineName: string, consoleIt: boolean = true): void
-
-# dyna-console-timeline
