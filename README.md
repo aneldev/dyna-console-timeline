@@ -23,20 +23,43 @@ consoleTimeline('Process customer request', 'completed');
 
 consoleTimelineReport('Process customer request');
     // consoles
-    consoleTimelineReport for timeline Process customer request Sat Oct 13 2018 17:01:26 GMT+0200 (Central European Summer Time)
-                                                0 start
-                             ############### 2089 load from database
-                           ################# 2297 calc the debit
-                                        ####  671 return to client
-                                        ####  528 completed
-    total duration 5585
-
+-CTL- [Process customer request] Console Timeline Report Sun Oct 14 2018 08:28:17 GMT+0200 (Central European Summer Time)
+-CTL- [Process customer request]                                            0.000 start
+-CTL- [Process customer request]                           ############## 138.000 load from database
+-CTL- [Process customer request]                     #################### 203.500 calc the debit
+-CTL- [Process customer request]                                       ##  17.300 return to client
+-CTL- [Process customer request]                                     ####  41.400 completed
+-CTL- [Process customer request] total duration 400.200
 ```
 
 # methods
 
-## consoleTimeline = (timelineName: string, taskName: string): void
+## consoleTimeline = (timelineName: string, taskName: string, consoleIt: boolean = false): void
+
+Create a tick.
+
+Console the tick setting the `consoleIt` to true.
 
 ## consoleTimelineReport = (timelineName: string, consoleIt: boolean = true): ITimeline
 
-## consoleTimelineReset = (timelineName: string, consoleIt: boolean = true): void
+Console the report.
+
+To do not console it set the `consoleIt` false.
+
+This method always return the ITimeLine object where contains the report of the specific timeline.
+
+```
+interface ITimeline {
+  ticks: ITick[];
+}
+
+interface ITick {
+  taskName: string;
+  time: number;
+}
+```
+
+
+## consoleTimelineReset = (timelineName: string): void
+
+Reset all collected data for this timeline.

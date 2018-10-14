@@ -1,8 +1,9 @@
 // methods
 
-export const consoleTimeline = (timelineName: string, taskName: string): void => {
+export const consoleTimeline = (timelineName: string, taskName: string, consoleIt: boolean = false): void => {
   if (!timelines[ timelineName ]) timelines[ timelineName ] = { ticks: [] };
-  timelines[ timelineName ].ticks.push({ taskName, time: now() })
+  timelines[ timelineName ].ticks.push({ taskName, time: now() });
+  if (consoleIt) console.log(consoleText(timelineName, taskName));
 };
 
 export const consoleTimelineReport = (timelineName: string, consoleIt: boolean = true): ITimeline => {
@@ -12,12 +13,12 @@ export const consoleTimelineReport = (timelineName: string, consoleIt: boolean =
     return timeline;
   }
   else {
-    console.error(`consoleTimelineReport: there is not timeline with this name`);
+    console.error(consoleText(timelineName, null, 'consoleTimelineReport: there is not timeline with this name'));
     return null;
   }
 };
 
-export const consoleTimelineReset = (timelineName: string, consoleIt: boolean = true): void => {
+export const consoleTimelineReset = (timelineName: string): void => {
   delete timelines[ timelineName ];
 };
 
@@ -42,16 +43,17 @@ const timelines: ITimelines = {};
 
 const consoleReportTimeline = (timelineName: string, timeline: ITimeline): void => {
   if (!timeline.ticks.length) {
-    console.log('consoleTimelineReport: no ticks, nothing to show');
+    console.log(consoleText(timelineName, null, 'consoleTimelineReport: no ticks, nothing to show'));
     return;
   }
 
   let lastTime: number = timeline.ticks[ 0 ].time;
   const duration: number = timeline.ticks[ timeline.ticks.length - 1 ].time - timeline.ticks[ 0 ].time;
+  const durationText: string = roundText(duration, hasPerformanceNow ? 3 : 0);
   const maxTime: number = timeline.ticks.reduce((acc: number, tick: ITick) => tick.time - timeline.ticks[ 0 ].time > acc ? tick.time - timeline.ticks[ 0 ].time : acc, 0);
-  const maxTickTimeLength: number = roundText(duration, hasPerformanceNow ? 3 : 0).length;
+  const maxTickTimeLength: number = durationText.length;
   const graphWidth: number = 40;
-  console.log('consoleTimelineReport for timeline', timelineName, new Date);
+  console.log(consoleText(timelineName, null, `Console Timeline Report ${new Date}`));
   timeline.ticks.forEach((tick: ITick) => {
     const timeLappsedNum: number = round(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
     const timeLappsedText: string = roundText(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
@@ -61,9 +63,9 @@ const consoleReportTimeline = (timelineName: string, timeline: ITimeline): void 
     output += textSize(graph, graphWidth, 'r') + " ";
     output += textSize(timeLappsedText, maxTickTimeLength, 'r') + " ";
     output += tick.taskName;
-    console.log(output);
+    console.log(consoleText(timelineName, null, output));
   });
-  console.log('total duration', duration);
+  console.log(consoleText(timelineName, null, `total duration ${durationText}`));
 };
 
 const textSize = (text: string, size: number, align: string): string => {
@@ -71,6 +73,13 @@ const textSize = (text: string, size: number, align: string): string => {
   while (text.length < size) {
     if (align === 'l') text += " "; else text = " " + text;
   }
+  return text;
+};
+
+const consoleText = (timelineName: string, taskName?: string, internalMessage?: string): string => {
+  let text: string = `-CTL- [${timelineName}]`;
+  if (taskName) text += ` (${taskName})`;
+  if (internalMessage) text += ` ${internalMessage}`;
   return text;
 };
 

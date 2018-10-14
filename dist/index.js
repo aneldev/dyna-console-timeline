@@ -97,10 +97,13 @@ exports.consoleTimelineReset = consoleTimeline_1.consoleTimelineReset;
 
 // methods
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consoleTimeline = function (timelineName, taskName) {
+exports.consoleTimeline = function (timelineName, taskName, consoleIt) {
+    if (consoleIt === void 0) { consoleIt = false; }
     if (!timelines[timelineName])
         timelines[timelineName] = { ticks: [] };
     timelines[timelineName].ticks.push({ taskName: taskName, time: now() });
+    if (consoleIt)
+        console.log(consoleText(timelineName, taskName));
 };
 exports.consoleTimelineReport = function (timelineName, consoleIt) {
     if (consoleIt === void 0) { consoleIt = true; }
@@ -111,7 +114,7 @@ exports.consoleTimelineReport = function (timelineName, consoleIt) {
         return timeline;
     }
     else {
-        console.error("consoleTimelineReport: there is not timeline with this name");
+        console.error(consoleText(timelineName, null, 'consoleTimelineReport: there is not timeline with this name'));
         return null;
     }
 };
@@ -123,15 +126,16 @@ var timelines = {};
 // private
 var consoleReportTimeline = function (timelineName, timeline) {
     if (!timeline.ticks.length) {
-        console.log('consoleTimelineReport: no ticks, nothing to show');
+        console.log(consoleText(timelineName, null, 'consoleTimelineReport: no ticks, nothing to show'));
         return;
     }
     var lastTime = timeline.ticks[0].time;
     var duration = timeline.ticks[timeline.ticks.length - 1].time - timeline.ticks[0].time;
+    var durationText = exports.roundText(duration, hasPerformanceNow ? 3 : 0);
     var maxTime = timeline.ticks.reduce(function (acc, tick) { return tick.time - timeline.ticks[0].time > acc ? tick.time - timeline.ticks[0].time : acc; }, 0);
-    var maxTickTimeLength = exports.roundText(duration, hasPerformanceNow ? 3 : 0).length;
+    var maxTickTimeLength = durationText.length;
     var graphWidth = 40;
-    console.log('consoleTimelineReport for timeline', timelineName, new Date);
+    console.log(consoleText(timelineName, null, "Console Timeline Report " + new Date));
     timeline.ticks.forEach(function (tick) {
         var timeLappsedNum = exports.round(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
         var timeLappsedText = exports.roundText(tick.time - lastTime, hasPerformanceNow ? 3 : 0);
@@ -141,9 +145,9 @@ var consoleReportTimeline = function (timelineName, timeline) {
         output += textSize(graph, graphWidth, 'r') + " ";
         output += textSize(timeLappsedText, maxTickTimeLength, 'r') + " ";
         output += tick.taskName;
-        console.log(output);
+        console.log(consoleText(timelineName, null, output));
     });
-    console.log('total duration', duration);
+    console.log(consoleText(timelineName, null, "total duration " + durationText));
 };
 var textSize = function (text, size, align) {
     text = text.substr(0, size);
@@ -153,6 +157,14 @@ var textSize = function (text, size, align) {
         else
             text = " " + text;
     }
+    return text;
+};
+var consoleText = function (timelineName, taskName, internalMessage) {
+    var text = "-CTL- [" + timelineName + "]";
+    if (taskName)
+        text += " (" + taskName + ")";
+    if (internalMessage)
+        text += " " + internalMessage;
     return text;
 };
 var hasPerformanceNow = !!(typeof performance !== "undefined" && performance.now);
