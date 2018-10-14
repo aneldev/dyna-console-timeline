@@ -118,8 +118,7 @@ exports.consoleTimelineReport = function (timelineName, consoleIt) {
         return null;
     }
 };
-exports.consoleTimelineReset = function (timelineName, consoleIt) {
-    if (consoleIt === void 0) { consoleIt = true; }
+exports.consoleTimelineReset = function (timelineName) {
     delete timelines[timelineName];
 };
 var timelines = {};
